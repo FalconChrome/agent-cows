@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Agent World Simulation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Enhanced Agent World Simulation</h1>
+        
+        <div class="controls-section">
+            <h4>Simulation:</h4>
+            <button onclick="toggleSimulation()">Start/Stop</button>
+            <button onclick="stepSimulation()">Step</button>
+            <button onclick="resetWorld()">Reset</button>
+            <button onclick="addRandomAgent()">Add Agent</button>
+            <button onclick="saveState()">Save State</button>
+            <button onclick="loadState()">Load State</button>
+            <div class="slider-control">
+                <label>Speed:</label>
+                <input type="range" id="speedSlider" min="1" max="10" value="5" onchange="updateSpeed()">
+            </div>
+        </div>
+        
+        <div class="controls-section">
+            <h4>Environment:</h4>
+            <div class="slider-control">
+                <label>Grass Growth Rate:</label>
+                <input type="range" id="grassGrowthSlider" min="1" max="10" value="5" onchange="updateGrassGrowth()">
+                <span id="grassGrowthValue">5</span>
+            </div>
+            <div class="slider-control">
+                <label>Cloud Speed:</label>
+                <input type="range" id="cloudSpeedSlider" min="0" max="10" value="3" onchange="updateCloudSpeed()">
+                <span id="cloudSpeedValue">3</span>
+            </div>
+            <div class="slider-control">
+                <label>Cloud Density:</label>
+                <input type="range" id="cloudDensitySlider" min="0" max="10" value="5" onchange="updateCloudDensity()">
+                <span id="cloudDensityValue">5</span>
+            </div>
+        </div>
+        
+        <div class="info">
+            <span>Agents: <span id="agentCount">0</span></span>
+            <span>Step: <span id="stepCount">0</span></span>
+            <span>Status: <span id="status">Stopped</span></span>
+            <div class="time-info">
+                <span id="timeIcon" class="sun-icon"></span>
+                <span>Time: <span id="timeDisplay">Day 1, 06:00</span></span>
+            </div>
+        </div>
+        
+        <canvas id="canvas" width="800" height="600"></canvas>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="color-box" style="background: #654321;"></div>
+                <span>Ground</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box" style="background: #228B22;"></div>
+                <span>Fresh Grass</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box" style="background: #8B4513;"></div>
+                <span>Eaten Grass</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box" style="background: #4169E1;"></div>
+                <span>Water</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box" style="background: #228B22; border: 2px solid #8B4513;"></div>
+                <span>Tree</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box" style="background: #FF0000;"></div>
+                <span>Agent (Active)</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box" style="background: #6666FF;"></div>
+                <span>Agent (Passive)</span>
+            </div>
+        </div>
+    </div>
+    <script src="js/agent.js"></script>
+    <script src="js/world.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/control.js"></script>
+</body>
+</html>
