@@ -1,18 +1,17 @@
-
 // Parameter controls
-function updateGrassGrowth() {
+function tweakGrassGrowth() {
     const slider = document.getElementById('grassGrowthSlider');
     grassGrowthRate = parseInt(slider.value);
     document.getElementById('grassGrowthValue').textContent = grassGrowthRate;
 }
 
-function updateCloudSpeed() {
+function tweakCloudSpeed() {
     const slider = document.getElementById('cloudSpeedSlider');
     cloudSpeed = parseInt(slider.value);
     document.getElementById('cloudSpeedValue').textContent = cloudSpeed;
 }
 
-function updateCloudDensity() {
+function tweakCloudDensity() {
     const slider = document.getElementById('cloudDensitySlider');
     cloudDensity = parseInt(slider.value);
     document.getElementById('cloudDensityValue').textContent = cloudDensity;
@@ -26,40 +25,6 @@ function toggleSimulation() {
     } else {
         startSimulation();
     }
-}
-
-function startSimulation() {
-    isRunning = true;
-    intervalId = setInterval(stepSimulation, animationSpeed);
-    document.getElementById('status').textContent = 'Running';
-}
-
-function stopSimulation() {
-    isRunning = false;
-    if (intervalId) {
-        clearInterval(intervalId);
-        intervalId = null;
-    }
-    document.getElementById('status').textContent = 'Stopped';
-}
-
-function stepSimulation() {
-    agents.forEach(agent => agent.update());
-    updateGrassGrowth();
-    updateClouds();
-    updateTime();
-    stepCount++;
-    render();
-}
-
-function resetWorld() {
-    stopSimulation();
-    initWorld();
-    agents = [];
-    stepCount = 0;
-    gameTime = 0;
-    dayCount = 1;
-    render();
 }
 
 function addRandomAgent() {
@@ -77,18 +42,13 @@ function addRandomAgent() {
     }
 }
 
-function updateSpeed() {
+function tweakSpeed() {
     const slider = document.getElementById('speedSlider');
     animationSpeed = 1100 - (slider.value * 100);
     if (isRunning) {
         stopSimulation();
         startSimulation();
     }
-}
-
-function updateUI() {
-    document.getElementById('agentCount').textContent = agents.length;
-    document.getElementById('stepCount').textContent = stepCount;
 }
 
 // Save/Load functionality

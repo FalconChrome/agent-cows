@@ -46,6 +46,40 @@ let stepCount = 0;
 let animationSpeed = 200;
 let intervalId = null;
 
+function startSimulation() {
+    isRunning = true;
+    intervalId = setInterval(stepSimulation, animationSpeed);
+    document.getElementById('status').textContent = 'Running';
+}
+
+function stepSimulation() {
+    agents.forEach(agent => agent.update());
+    updateGrassGrowth();
+    updateClouds();
+    updateTime();
+    stepCount++;
+    render();
+}
+
+function stopSimulation() {
+    isRunning = false;
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+    document.getElementById('status').textContent = 'Stopped';
+}
+
+function resetSimulation() {
+    stopSimulation();
+    initWorld();
+    agents = [];
+    stepCount = 0;
+    gameTime = 0;
+    dayCount = 1;
+    render();
+}
+
 // Initialize
 initWorld();
 render();

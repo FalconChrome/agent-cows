@@ -7,6 +7,10 @@ class Agent {
         this.maxEnergy = 100;
         this.direction = Math.floor(Math.random() * 4);
         this.id = Math.random().toString(36).substr(2, 9);
+
+        // Reproduction state
+        this.reproductionCooldown = 0;
+        this.reproductionThreshold = 80; // energy needed to reproduce
         
         // Personality parameters
         this.versatility = Math.random() * 0.8 + 0.1; // 0.1-0.9: how often they change direction
@@ -42,6 +46,7 @@ class Agent {
         
         this.interactWithTile();
         this.updateEnergy();
+        this.updateReproduction();
     }
     
     seekGrass() {
@@ -136,7 +141,47 @@ class Agent {
         if (this.energy < 0) this.energy = 0;
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
     }
-    
+
+    updateReproduction() {
+        if (this.reproductionCooldown > 0) {
+            this.reproductionCooldown--;
+        }
+        
+        if (this.energy >= this.reproductionThreshold && 
+            this.reproductionCooldown === 0 && 
+            Math.random() < 0.01) { // 1% chance per step
+            this.reproduce();
+        }
+    }
+
+    reproduce() {
+        // Find empty adjacent tile
+        for (let dir = 0; dir < 4; dir++) {
+            const [x, y] = this.getNextPosition(dir);
+            if (this.canMoveTo(x, y)) {
+                // Create offspring with mutation
+                const child = new Agent(x, y);
+                child.versatility = this.mutate(this.versatility);
+                child.activation = this.mutate(this.activation);
+                child.explorationRadius = Math.max(1, Math.min(3, 
+                    this.explorationRadius + (Math.random() < 0.2 ? 
+                    (Math.random() < 0.5 ? -1 : 1) : 0)));
+                
+                agents.push(child);
+                
+                // Cost to parent
+                this.energy -= 40;
+                this.reproductionCooldown = 100;
+                break;
+            }
+        }
+    }
+
+    mutate(value) {
+        const mutation = (Math.random() - 0.5) * 0.2;
+        return Math.max(0.1, Math.min(0.9, value + mutation));
+    }
+
     getColor() {
         // Color based on activation level and energy
         const isActive = this.activation > 0.5;

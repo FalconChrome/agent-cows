@@ -8,19 +8,19 @@
 </head>
 <body>
     <div class="container">
-        <h1>Enhanced Agent World Simulation</h1>
+        <h1>Enhanced Agent World Simulation v0.1.4</h1>
         
         <div class="controls-section">
             <h4>Simulation:</h4>
             <button onclick="toggleSimulation()">Start/Stop</button>
             <button onclick="stepSimulation()">Step</button>
-            <button onclick="resetWorld()">Reset</button>
+            <button onclick="resetSimulation()">Reset</button>
             <button onclick="addRandomAgent()">Add Agent</button>
             <button onclick="saveState()">Save State</button>
             <button onclick="loadState()">Load State</button>
             <div class="slider-control">
                 <label>Speed:</label>
-                <input type="range" id="speedSlider" min="1" max="10" value="5" onchange="updateSpeed()">
+                <input type="range" id="speedSlider" min="1" max="10" value="5" onchange="tweakSpeed()">
             </div>
         </div>
         
@@ -28,17 +28,17 @@
             <h4>Environment:</h4>
             <div class="slider-control">
                 <label>Grass Growth Rate:</label>
-                <input type="range" id="grassGrowthSlider" min="1" max="10" value="5" onchange="updateGrassGrowth()">
+                <input type="range" id="grassGrowthSlider" min="1" max="10" value="5" onchange="tweakGrassGrowth()">
                 <span id="grassGrowthValue">5</span>
             </div>
             <div class="slider-control">
                 <label>Cloud Speed:</label>
-                <input type="range" id="cloudSpeedSlider" min="0" max="10" value="3" onchange="updateCloudSpeed()">
+                <input type="range" id="cloudSpeedSlider" min="0" max="10" value="3" onchange="tweakCloudSpeed()">
                 <span id="cloudSpeedValue">3</span>
             </div>
             <div class="slider-control">
                 <label>Cloud Density:</label>
-                <input type="range" id="cloudDensitySlider" min="0" max="10" value="5" onchange="updateCloudDensity()">
+                <input type="range" id="cloudDensitySlider" min="0" max="10" value="5" onchange="tweakCloudDensity()">
                 <span id="cloudDensityValue">5</span>
             </div>
         </div>
@@ -88,8 +88,9 @@
     </div>
     <script src="js/agent.js"></script>
     <script src="js/world.js"></script>
+    <script src="js/simulation.js"></script> <!-- Add this -->
     <script src="js/render.js"></script>
-    <script src="js/control.js"></script>
+    <script src="js/controls.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
