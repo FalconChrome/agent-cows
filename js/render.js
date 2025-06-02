@@ -109,6 +109,7 @@ function hexToRgb(hex) {
 }
 
 function updateUI() {
+    document.getElementById('versionDisplay').textContent = SIMULATION_VERSION;
     document.getElementById('agentCount').textContent = agents.length;
     document.getElementById('stepCount').textContent = stepCount;
 }

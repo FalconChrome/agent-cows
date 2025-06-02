@@ -1,4 +1,4 @@
-
+const SIMULATION_VERSION = 'v' + process.env.GIT_COMMIT || "0.1.1.1"; 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const TILE_SIZE = 20;
