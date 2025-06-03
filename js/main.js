@@ -1,4 +1,4 @@
-const SIMULATION_VERSION = "9425c6c";
+const SIMULATION_VERSION = "0.w.2";
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const TILE_SIZE = 20;
