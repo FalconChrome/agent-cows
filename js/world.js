@@ -13,12 +13,14 @@ let precipitation = [];         // Current rainfall intensity per tile
 let evaporation = [];          // Evaporation rate per tile
 
 // Weather constants
-const EVAPORATION_RATE = 0.001;     // Base evaporation per step
+const DAY_LENGTH = 24;
+const SEASON_LENGTH = DAY_LENGTH * 30; // 30 days per season
+const EVAPORATION_RATE = 0.002;     // Base evaporation per step
 const RAIN_THRESHOLD = 0.6;         // Cloud density needed for rain
 const RAIN_INTENSITY = 0.02;        // How much water rain adds
 const RUNOFF_RATE = 0.1;           // Speed of water flow
-const SOIL_ABSORPTION = 0.05;       // How fast soil absorbs water
-const SEASON_LENGTH = DAY_LENGTH * 30; // 30 days per season
+const SOIL_ABSORPTION = 0.001;       // How fast soil absorbs water
+const TRANSPIRATION_RATE = 0.01; // Base rate
 
 // Initialize cloud system
 function initClouds() {
@@ -127,10 +129,12 @@ function initWaterCycle() {
 // Update water cycle - call this in your main update loop
 function updateWaterCycle() {
     calculatePrecipitation();
+    processTreeTranspiration();
     processEvaporation();
     handleRunoff();
     updateSoilMoisture();
     updateTileTypes();
+    
 }
 
 // Calculate rainfall based on cloud density
@@ -143,14 +147,40 @@ function calculatePrecipitation() {
             
             if (cloudField[y][x] > RAIN_THRESHOLD) {
                 const rainChance = (cloudField[y][x] - RAIN_THRESHOLD) * seasonalFactor;
+                // console.log("May it rain p=" + rainChance + "% @" + x + "x" + y)
                 
                 if (Math.random() < rainChance) {
                     precipitation[y][x] = RAIN_INTENSITY * (1 + Math.random());
                     waterLevels[y][x] = Math.min(1.0, waterLevels[y][x] + precipitation[y][x]);
+                    console.log("Rains @" + x + "x" + y)
                 }
             }
         }
     }
+}
+
+function processTreeTranspiration() {
+    const isDay = isDaytime();
+
+    for (let y = 0; y < WORLD_HEIGHT; y++) {
+        for (let x = 0; x < WORLD_WIDTH; x++) {
+            if (world[y][x] === TILES.TREE && soilMoisture[y][x] > 0.3) {
+                const cloudShadow = getCloudShadow(x, y);
+                // Trees transpire more during daytime under sunlight
+                const sunlightFactor = isDay ? (1.5 - cloudShadow * 0.7) : 0.7;
+
+                // Trees transpire more during daytime
+                const rate = TRANSPIRATION_RATE * sunlightFactor;
+
+                // Absorb soil moisture
+                soilMoisture[y][x] = Math.max(0, soilMoisture[y][x] - rate * 0.8);
+                
+                // Release moisture to clouds
+                addCloudMoisture(x, y, rate);
+            }
+        }
+    }
+    // console.log(transpriration.at(15))
 }
 
 // Process evaporation based on temperature and sunlight
@@ -171,11 +201,12 @@ function processEvaporation() {
                 
                 // Evaporation contributes to local cloud formation
                 if (evaporation[y][x] > 0) {
-                    addCloudMoisture(x, y, evaporation[y][x] * 0.5);
+                    addCloudMoisture(x, y, evaporation[y][x]);
                 }
             }
         }
     }
+    // console.log(evaporation.at(15))
 }
 
 // Add moisture to cloud system from evaporation

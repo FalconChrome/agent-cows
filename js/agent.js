@@ -5,6 +5,7 @@ class Agent {
         this.y = y;
         this.energy = 100;
         this.maxEnergy = 100;
+        this.waterLevel = 80; // Stay hydrated
         this.direction = Math.floor(Math.random() * 4);
         this.id = Math.random().toString(36).substr(2, 9);
 
@@ -32,7 +33,9 @@ class Agent {
             // Direction change based on versatility
             if (Math.random() < this.versatility) {
                 if (this.energy < 70) {
-                    this.seekGrass();
+                    this.seek(TILES.GRASS_FRESH);
+                } else if (this.waterLevel < 50) {
+                    this.seek(TILES.WATER)
                 } else {
                     this.direction = Math.floor(Math.random() * 4);
                 }
@@ -47,9 +50,10 @@ class Agent {
         this.interactWithTile();
         this.updateEnergy();
         this.updateReproduction();
+        this.updateHydration();
     }
     
-    seekGrass() {
+    seek(TILE) {
         let bestDirection = this.direction;
         let bestDistance = Infinity;
         
@@ -58,7 +62,7 @@ class Agent {
             for (let dir = 0; dir < 4; dir++) {
                 const [targetX, targetY] = this.getPositionInDirection(dir, radius);
                 
-                if (this.isValidPosition(targetX, targetY) && world[targetY][targetX] === TILES.GRASS_FRESH) {
+                if (this.isValidPosition(targetX, targetY) && world[targetY][targetX] === TILE) {
                     const distance = Math.abs(targetX - this.x) + Math.abs(targetY - this.y);
                     if (distance < bestDistance) {
                         bestDistance = distance;
@@ -126,6 +130,14 @@ class Agent {
             world[this.y][this.x] = TILES.GRASS_EATEN;
             grassGrowthTimers[this.y][this.x] = stepCount + this.getGrassRegrowthTime();
         }
+
+        // Drinking from water sources
+        const [x, y] = this.getPositionInDirection(this.direction, 1);
+        if (this.isValidPosition(x, y) && world[y][x] === TILES.WATER) {
+            this.waterLevel = Math.min(100, this.waterLevel + 50);
+            waterLevels[y][x] = Math.max(0.0, waterLevels[y][x] - 0.05);
+            console.log("Blurp! @" + x + 'x' + y);
+        }
     }
     
     getGrassRegrowthTime() {
@@ -151,6 +163,22 @@ class Agent {
             this.reproductionCooldown === 0 && 
             Math.random() < 0.01) { // 1% chance per step
             this.reproduce();
+        }
+    }
+
+    updateHydration() {
+        // Water loss through metabolism
+        this.waterLevel = Math.max(0, this.waterLevel - 0.1);
+        
+        // Transpiration (release water vapor)
+        if (this.waterLevel > 30) {
+            const transpirationRate = 0.005 * (this.waterLevel/100);
+            addCloudMoisture(this.x, this.y, transpirationRate);
+        }
+        
+        // Death from dehydration
+        if (this.waterLevel <= 0) {
+            this.energy -= 1; // Triggers quick death in existing energy system
         }
     }
 

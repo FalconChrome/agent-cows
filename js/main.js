@@ -1,4 +1,4 @@
-const SIMULATION_VERSION = "a32d10a";
+const SIMULATION_VERSION = "9425c6c";
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const TILE_SIZE = 20;
@@ -25,12 +25,11 @@ const TILE_COLORS = {
 // Simulation parameters
 let grassGrowthRate = 5;
 let cloudSpeed = 3;
-let cloudDensity = 5;
+let cloudDensity = 6;
 
 // Time system
 let gameTime = 0;
 let dayCount = 1;
-const DAY_LENGTH = 24;
 
 // Simulation state
 let world = [];
