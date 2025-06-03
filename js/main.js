@@ -1,4 +1,4 @@
-const SIMULATION_VERSION = "0aaf486";
+const SIMULATION_VERSION = "a32d10a";
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const TILE_SIZE = 20;
@@ -32,11 +32,6 @@ let gameTime = 0;
 let dayCount = 1;
 const DAY_LENGTH = 24;
 
-// Cloud system
-let cloudField = [];
-let cloudVelocityX = [];
-let cloudVelocityY = [];
-
 // Simulation state
 let world = [];
 let grassGrowthTimers = [];
@@ -54,9 +49,7 @@ function startSimulation() {
 
 function stepSimulation() {
     agents.forEach(agent => agent.update());
-    updateGrassGrowth();
-    updateClouds();
-    updateTime();
+    updateWorld();
     stepCount++;
     render();
 }
@@ -72,7 +65,7 @@ function stopSimulation() {
 
 function resetSimulation() {
     stopSimulation();
-    initWorld();
+    initWorldWithWaterCycle();
     agents = [];
     stepCount = 0;
     gameTime = 0;
@@ -81,7 +74,7 @@ function resetSimulation() {
 }
 
 // Initialize
-initWorld();
+initWorldWithWaterCycle();
 render();
 
 document.getElementById('versionDisplay').textContent = SIMULATION_VERSION; 
